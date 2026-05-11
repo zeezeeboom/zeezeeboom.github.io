@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kerbal Simpit Controller</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101317;
+      --panel: #181d23;
+      --text: #edf2f7;
+      --muted: #a8b3c2;
+      --accent: #54d17a;
+      --line: #2a323b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    header {
+      padding: 56px 24px 32px;
+      border-bottom: 1px solid var(--line);
+      background: #151a20;
+    }
+
+    main {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .hero {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.05;
+    }
+
+    h2 {
+      margin: 34px 0 14px;
+      font-size: 1.4rem;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    .tagline {
+      max-width: 720px;
+      font-size: 1.15rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 16px;
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #1c232b;
+      color: var(--text);
+    }
+
+    td {
+      color: var(--muted);
+    }
+
+    code {
+      color: var(--accent);
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <h1>Kerbal Simpit Controller</h1>
+      <p class="tagline">A custom Arduino Mega flight panel for Kerbal Space Program with staging, telemetry displays, joystick attitude control, throttle encoder, action groups, and status LEDs.</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Controls</h2>
+      <div class="grid">
+        <div class="card"><strong>Joystick</strong><p>Normal mode controls pitch and yaw. Clicking the joystick toggles roll mode, where the X axis controls roll only.</p></div>
+        <div class="card"><strong>Stage System</strong><p>Stage button starts a launch countdown before first stage, then performs instant staging. LCD encoder click resets the stage digit to blank.</p></div>
+        <div class="card"><strong>Telemetry</strong><p>16x2 I2C LCD pages show ascent, orbit, maneuver, and target data from KerbalSimpit.</p></div>
+        <div class="card"><strong>Displays</strong><p>One 1-digit display shows stage countdown/state. One 4-digit display shows USSR standby, wait, or altitude.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Pin Map</h2>
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Arduino Mega Pins</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>16x2 I2C LCD</td><td><code>SDA 20</code>, <code>SCL 21</code>, 5V, GND</td></tr>
+          <tr><td>Display mode toggle</td><td><code>5</code> to GND</td></tr>
+          <tr><td>LCD page encoder</td><td><code>2</code>, <code>3</code>, switch <code>4</code></td></tr>
+          <tr><td>Throttle encoder</td><td><code>18</code>, <code>19</code>, switch <code>29</code></td></tr>
+          <tr><td>Joystick</td><td><code>A0</code> pitch, <code>A1</code> yaw/roll, switch <code>46</code></td></tr>
+          <tr><td>Stage button</td><td><code>10</code></td></tr>
+          <tr><td>1-digit stage display</td><td><code>22</code>, <code>23</code>, <code>24</code>, <code>25</code>, <code>26</code>, <code>27</code>, <code>28</code></td></tr>
+          <tr><td>4-digit altitude display</td><td>Digits <code>30</code>, <code>31</code>, <code>32</code>, <code>33</code>; segments <code>34</code>-<code>41</code></td></tr>
+          <tr><td>SAS / RCS / Brakes / Lights / Gear</td><td><code>11</code>, <code>12</code>, <code>8</code>, <code>9</code>, <code>14</code></td></tr>
+          <tr><td>Status LEDs</td><td>SAS <code>6</code>, RCS <code>7</code>, Orbit <code>15</code>, System Off <code>16</code></td></tr>
+          <tr><td>Action groups 1-4</td><td><code>42</code>, <code>43</code>, <code>44</code>, <code>45</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Build Notes</h2>
+      <p>The controller uses <code>KerbalSimpit</code>, <code>LiquidCrystal_I2C</code>, <code>Encoder</code>, and <code>SevSeg</code>. Buttons and toggles are wired to ground and use Arduino internal pullups.</p>
+      <p>The 4-digit display is directly multiplexed by the Arduino. A driver module such as MAX7219 or TM1637 would make the display steadier under heavier serial and LCD traffic.</p>
+    </section>
+
+    <footer>
+      Project by zeezeeboom.
+    </footer>
+  </main>
+</body>
+</html>
