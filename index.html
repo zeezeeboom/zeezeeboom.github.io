@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kerbal Simpit Controller</title>
+  <title>Kerbal Simpit Controller Build Guide</title>
   <style>
     :root {
       color-scheme: dark;
       --bg: #101317;
-      --panel: #181d23;
+      --band: #151a20;
+      --panel: #1a2027;
       --text: #edf2f7;
       --muted: #a8b3c2;
       --accent: #54d17a;
       --line: #2a323b;
+      --warn: #ffd166;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -28,20 +28,20 @@
     }
 
     header {
-      padding: 56px 24px 32px;
+      padding: 52px 24px 30px;
       border-bottom: 1px solid var(--line);
-      background: #151a20;
+      background: var(--band);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
     main {
-      max-width: 1040px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 32px 24px 56px;
-    }
-
-    .hero {
-      max-width: 1040px;
-      margin: 0 auto;
+      padding: 28px 24px 56px;
     }
 
     h1 {
@@ -51,25 +51,34 @@
     }
 
     h2 {
-      margin: 34px 0 14px;
-      font-size: 1.4rem;
+      margin: 34px 0 12px;
+      font-size: 1.45rem;
     }
 
-    p {
-      margin: 0 0 14px;
+    h3 {
+      margin: 24px 0 8px;
+      font-size: 1.05rem;
+    }
+
+    p, li {
       color: var(--muted);
     }
 
+    a {
+      color: var(--accent);
+    }
+
     .tagline {
-      max-width: 720px;
-      font-size: 1.15rem;
+      max-width: 780px;
+      margin: 0;
+      font-size: 1.12rem;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 14px;
-      margin-top: 18px;
+      margin-top: 16px;
     }
 
     .card {
@@ -85,16 +94,22 @@
       color: var(--text);
     }
 
+    .notice {
+      border-left: 4px solid var(--warn);
+      background: #211f17;
+      padding: 12px 14px;
+      margin: 18px 0;
+      color: var(--muted);
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 12px;
-      overflow: hidden;
       border: 1px solid var(--line);
     }
 
-    th,
-    td {
+    th, td {
       padding: 10px 12px;
       border-bottom: 1px solid var(--line);
       text-align: left;
@@ -112,6 +127,26 @@
 
     code {
       color: var(--accent);
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    pre {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0d1117;
+      padding: 14px;
+    }
+
+    .button {
+      display: inline-block;
+      margin: 10px 10px 0 0;
+      padding: 10px 13px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--text);
+      background: #173020;
     }
 
     footer {
@@ -125,53 +160,137 @@
 </head>
 <body>
   <header>
-    <div class="hero">
+    <div class="wrap">
       <h1>Kerbal Simpit Controller</h1>
-      <p class="tagline">A custom Arduino Mega flight panel for Kerbal Space Program with staging, telemetry displays, joystick attitude control, throttle encoder, action groups, and status LEDs.</p>
+      <p class="tagline">A build guide for a custom Arduino Mega flight panel for Kerbal Space Program, with staging, telemetry, joystick attitude control, throttle encoder, action groups, and status LEDs.</p>
+      <a class="button" href="sketch_apr18a.ino">Download Arduino Sketch</a>
+      <a class="button" href="#pin-map">Jump To Pin Map</a>
     </div>
   </header>
 
   <main>
     <section>
-      <h2>Controls</h2>
+      <h2>What It Does</h2>
       <div class="grid">
         <div class="card"><strong>Joystick</strong><p>Normal mode controls pitch and yaw. Clicking the joystick toggles roll mode, where the X axis controls roll only.</p></div>
-        <div class="card"><strong>Stage System</strong><p>Stage button starts a launch countdown before first stage, then performs instant staging. LCD encoder click resets the stage digit to blank.</p></div>
-        <div class="card"><strong>Telemetry</strong><p>16x2 I2C LCD pages show ascent, orbit, maneuver, and target data from KerbalSimpit.</p></div>
-        <div class="card"><strong>Displays</strong><p>One 1-digit display shows stage countdown/state. One 4-digit display shows USSR standby, wait, or altitude.</p></div>
+        <div class="card"><strong>Stage System</strong><p>The stage button starts a launch countdown before first stage, then performs instant staging. The LCD encoder click resets the 1-digit display to blank.</p></div>
+        <div class="card"><strong>Telemetry LCD</strong><p>The 16x2 I2C LCD shows ascent, orbit, maneuver, and target pages from KerbalSimpit telemetry.</p></div>
+        <div class="card"><strong>Altitude Display</strong><p>The 4-digit display shows <code>USSR</code> in standby, <code>wait</code> before data arrives, and altitude once connected.</p></div>
       </div>
     </section>
 
     <section>
+      <h2>Parts List</h2>
+      <ul>
+        <li>Arduino Mega 2560 or compatible board</li>
+        <li>16x2 LCD with I2C backpack</li>
+        <li>1x common-cathode 4-digit 7-segment display</li>
+        <li>1x common-cathode 1-digit 7-segment display</li>
+        <li>Analog joystick module with VRx, VRy, SW, 5V, and GND</li>
+        <li>2x EC11 rotary encoders with push switches</li>
+        <li>Momentary stage button</li>
+        <li>Toggle switches or buttons for SAS, RCS, brakes, lights, gear, action groups, and display mode</li>
+        <li>Status LEDs for SAS, RCS, orbit, and system-off indicator</li>
+        <li>Current-limiting resistors for LED and 7-segment segment lines</li>
+        <li>Breadboard, jumper wires, panel hardware, and USB cable</li>
+      </ul>
+      <div class="notice">Use resistors on LEDs and 7-segment segments. Do not connect bare LEDs or display segments straight to Arduino pins without current limiting.</div>
+    </section>
+
+    <section>
+      <h2>Required Software</h2>
+      <ul>
+        <li>Arduino IDE</li>
+        <li>Kerbal Space Program with the KerbalSimpit plugin installed</li>
+        <li>Arduino libraries: <code>KerbalSimpit</code>, <code>LiquidCrystal_I2C</code>, <code>Encoder</code>, and <code>SevSeg</code></li>
+      </ul>
+      <p>In Arduino IDE, install libraries from <strong>Sketch &gt; Include Library &gt; Manage Libraries</strong>. KerbalSimpit may need to be installed from its project files if it is not available in Library Manager.</p>
+    </section>
+
+    <section id="pin-map">
       <h2>Pin Map</h2>
       <table>
         <thead>
-          <tr><th>Component</th><th>Arduino Mega Pins</th></tr>
+          <tr><th>Component</th><th>Arduino Mega Pins</th><th>Notes</th></tr>
         </thead>
         <tbody>
-          <tr><td>16x2 I2C LCD</td><td><code>SDA 20</code>, <code>SCL 21</code>, 5V, GND</td></tr>
-          <tr><td>Display mode toggle</td><td><code>5</code> to GND</td></tr>
-          <tr><td>LCD page encoder</td><td><code>2</code>, <code>3</code>, switch <code>4</code></td></tr>
-          <tr><td>Throttle encoder</td><td><code>18</code>, <code>19</code>, switch <code>29</code></td></tr>
-          <tr><td>Joystick</td><td><code>A0</code> pitch, <code>A1</code> yaw/roll, switch <code>46</code></td></tr>
-          <tr><td>Stage button</td><td><code>10</code></td></tr>
-          <tr><td>1-digit stage display</td><td><code>22</code>, <code>23</code>, <code>24</code>, <code>25</code>, <code>26</code>, <code>27</code>, <code>28</code></td></tr>
-          <tr><td>4-digit altitude display</td><td>Digits <code>30</code>, <code>31</code>, <code>32</code>, <code>33</code>; segments <code>34</code>-<code>41</code></td></tr>
-          <tr><td>SAS / RCS / Brakes / Lights / Gear</td><td><code>11</code>, <code>12</code>, <code>8</code>, <code>9</code>, <code>14</code></td></tr>
-          <tr><td>Status LEDs</td><td>SAS <code>6</code>, RCS <code>7</code>, Orbit <code>15</code>, System Off <code>16</code></td></tr>
-          <tr><td>Action groups 1-4</td><td><code>42</code>, <code>43</code>, <code>44</code>, <code>45</code></td></tr>
+          <tr><td>16x2 I2C LCD</td><td><code>SDA 20</code>, <code>SCL 21</code>, 5V, GND</td><td>Most backpacks use address <code>0x27</code>.</td></tr>
+          <tr><td>Display mode toggle</td><td><code>5</code> to GND</td><td>Open/high is standby. Grounded/low is active telemetry.</td></tr>
+          <tr><td>LCD page encoder</td><td><code>2</code>, <code>3</code>, switch <code>4</code></td><td>Encoder switch resets the 1-digit stage display.</td></tr>
+          <tr><td>Throttle encoder</td><td><code>18</code>, <code>19</code>, switch <code>29</code></td><td>Encoder switch sets max throttle.</td></tr>
+          <tr><td>Joystick</td><td><code>A0</code> pitch, <code>A1</code> yaw/roll, switch <code>46</code></td><td>Switch toggles between normal pitch/yaw and roll-only mode.</td></tr>
+          <tr><td>Stage button</td><td><code>10</code></td><td>Button goes from pin to GND.</td></tr>
+          <tr><td>1-digit stage display</td><td><code>22</code>, <code>23</code>, <code>24</code>, <code>25</code>, <code>26</code>, <code>27</code>, <code>28</code></td><td>Segments A-G. Common cathode to GND.</td></tr>
+          <tr><td>4-digit altitude display</td><td>Digits <code>30</code>, <code>31</code>, <code>32</code>, <code>33</code>; segments <code>34</code>-<code>41</code></td><td>Common cathode. Digit order is reversed in code so <code>USSR</code> reads correctly.</td></tr>
+          <tr><td>SAS / RCS / Brakes / Lights / Gear</td><td><code>11</code>, <code>12</code>, <code>8</code>, <code>9</code>, <code>14</code></td><td>Each switch/button connects its pin to GND.</td></tr>
+          <tr><td>Status LEDs</td><td>SAS <code>6</code>, RCS <code>7</code>, Orbit <code>15</code>, System Off <code>16</code></td><td>Use one resistor per LED.</td></tr>
+          <tr><td>Action groups 1-4</td><td><code>42</code>, <code>43</code>, <code>44</code>, <code>45</code></td><td>Each button connects its pin to GND.</td></tr>
         </tbody>
       </table>
     </section>
 
     <section>
-      <h2>Build Notes</h2>
-      <p>The controller uses <code>KerbalSimpit</code>, <code>LiquidCrystal_I2C</code>, <code>Encoder</code>, and <code>SevSeg</code>. Buttons and toggles are wired to ground and use Arduino internal pullups.</p>
-      <p>The 4-digit display is directly multiplexed by the Arduino. A driver module such as MAX7219 or TM1637 would make the display steadier under heavier serial and LCD traffic.</p>
+      <h2>Wiring Rules</h2>
+      <ul>
+        <li>All buttons and toggles use <code>INPUT_PULLUP</code>. Wire one side to the Arduino pin and the other side to GND.</li>
+        <li>All modules must share a common GND with the Arduino.</li>
+        <li>The LCD I2C backpack uses the Mega I2C pins: SDA on 20 and SCL on 21.</li>
+        <li>The joystick analog pins connect to <code>A0</code> and <code>A1</code>. The joystick switch connects to pin <code>46</code> and GND.</li>
+        <li>The direct-wired 4-digit display is multiplexed by the Arduino, so minor flicker is possible under heavy serial or LCD activity.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Upload Steps</h2>
+      <ol>
+        <li>Download <a href="sketch_apr18a.ino"><code>sketch_apr18a.ino</code></a>.</li>
+        <li>Open it in Arduino IDE.</li>
+        <li>Select <strong>Tools &gt; Board &gt; Arduino Mega or Mega 2560</strong>.</li>
+        <li>Select the correct COM port under <strong>Tools &gt; Port</strong>.</li>
+        <li>Install the required libraries if Arduino IDE reports missing includes.</li>
+        <li>Click <strong>Upload</strong>.</li>
+        <li>Start KSP with KerbalSimpit installed and connect the serial device.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Controls In Use</h2>
+      <table>
+        <thead>
+          <tr><th>Control</th><th>Behavior</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Stage button</td><td>Before first stage, starts a 5-second countdown then stages. After that, each press stages immediately and increments the 1-digit stage display.</td></tr>
+          <tr><td>LCD encoder rotation</td><td>Changes telemetry page.</td></tr>
+          <tr><td>LCD encoder click</td><td>Resets the 1-digit stage display to blank and returns stage logic to pre-countdown state.</td></tr>
+          <tr><td>Joystick movement</td><td>Normal mode: Y axis is pitch, X axis is yaw.</td></tr>
+          <tr><td>Joystick click</td><td>Toggles roll-only mode. In roll mode, X axis controls roll and Y axis is ignored.</td></tr>
+          <tr><td>Throttle encoder</td><td>Adjusts throttle in steps. Encoder click sets max throttle.</td></tr>
+          <tr><td>Display mode toggle</td><td>Switches LCD/4-digit display between standby and active telemetry.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Troubleshooting</h2>
+      <h3>LCD does not display text</h3>
+      <p>Check 5V, GND, SDA pin 20, SCL pin 21, and the I2C address. The code uses <code>0x27</code>; some backpacks use <code>0x3F</code>.</p>
+
+      <h3>4-digit display is mirrored</h3>
+      <p>The code uses digit order <code>{30, 31, 32, 33}</code> so <code>USSR</code> reads correctly. If yours is reversed, change the digit order back to <code>{33, 32, 31, 30}</code>.</p>
+
+      <h3>4-digit display flashes or looks unstable</h3>
+      <p>The display is directly multiplexed by the Arduino. The sketch refreshes it aggressively, but a driver module such as MAX7219, TM1637, or HT16K33 is the best way to make it rock solid.</p>
+
+      <h3>Joystick click does not toggle roll mode</h3>
+      <p>Make sure the joystick switch pin is wired to Arduino pin <code>46</code> and GND. The switch should read LOW when pressed.</p>
+
+      <h3>KSP does not respond</h3>
+      <p>Confirm KerbalSimpit is installed in KSP, the correct serial port is selected, and the Arduino sketch has uploaded successfully to an Arduino Mega 2560.</p>
     </section>
 
     <footer>
-      Project by zeezeeboom.
+      Project by zeezeeboom. Built for Kerbal Space Program and KerbalSimpit.
     </footer>
   </main>
 </body>
