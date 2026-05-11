@@ -15,6 +15,7 @@
       --accent: #54d17a;
       --line: #2a323b;
       --warn: #ffd166;
+      --danger: #ff6b6b;
     }
 
     * { box-sizing: border-box; }
@@ -97,6 +98,14 @@
     .notice {
       border-left: 4px solid var(--warn);
       background: #211f17;
+      padding: 12px 14px;
+      margin: 18px 0;
+      color: var(--muted);
+    }
+
+    .warning {
+      border-left: 4px solid var(--danger);
+      background: #241818;
       padding: 12px 14px;
       margin: 18px 0;
       color: var(--muted);
@@ -195,6 +204,22 @@
         <li>Breadboard, jumper wires, panel hardware, and USB cable</li>
       </ul>
       <div class="notice">Use resistors on LEDs and 7-segment segments. Do not connect bare LEDs or display segments straight to Arduino pins without current limiting.</div>
+    </section>
+
+    <section>
+      <h2>3D Print Files</h2>
+      <div class="warning">
+        <strong>First draft warning:</strong> the current 3D model is an early fit-check version. I had to cut and saw parts of the printed model to make everything fit, so expect some trimming, sanding, drilling, or rework if you print it as-is.
+      </div>
+      <p>STL files are included in the <code>stl/</code> folder:</p>
+      <pre><code>stl/
+  AV_joystick.stl
+  base (2).stl
+  bottom.stl
+  F1_knobs.stl
+  Faceplate Riser.stl
+  faceplate.stl</code></pre>
+      <p>Before printing the full panel, print small test pieces around the LCD, encoders, joystick, and 7-segment display openings to confirm the real parts fit.</p>
     </section>
 
     <section>

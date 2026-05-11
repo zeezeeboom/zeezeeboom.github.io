@@ -6,6 +6,7 @@ Build guide and Arduino sketch for a custom Arduino Mega Kerbal Space Program co
 
 - `index.html` - GitHub Pages build guide
 - `sketch_apr18a.ino` - Arduino Mega controller sketch
+- `stl/` - place for 3D print STL files and print notes
 
 ## Hardware Summary
 
@@ -17,6 +18,10 @@ Build guide and Arduino sketch for a custom Arduino Mega Kerbal Space Program co
 - Two EC11 rotary encoders
 - Buttons/toggles for stage, SAS, RCS, brakes, lights, gear, and action groups
 - Status LEDs with current-limiting resistors
+
+## 3D Print Warning
+
+The current 3D model is a first draft. The original build required cutting and sawing parts of the printed model to make everything fit. Expect trimming, sanding, drilling, or other fit adjustments before final assembly.
 
 ## Main Pins
 
